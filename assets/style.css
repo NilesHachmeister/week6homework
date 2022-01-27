@@ -1,3 +1,18 @@
-*{
-    background-color: aqua;
+header{
+    background: rgb(0,151,255);
+background: linear-gradient(90deg, rgba(0,151,255,1) 0%, rgba(2,7,138,0.8183867296918768) 100%);
+    color: white;
+}
+
+h1{
+    height: 65px;
+}
+
+
+
+.custom-card{
+    font-size: .9rem;
+    background-color: 	#536878;
+    color: white;
+    padding-left: 1px;
 }
