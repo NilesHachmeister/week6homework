@@ -1,17 +1,8 @@
 let todaysDate = $("#todays-date")
-
-
-
-
+let ul = $("ul")
+let searchBtn = $(".form-inline")
 
 let m = moment().format("(MM/DD/YYYY)");
-
-
-
-
-todaysDate.text(m)
-
-console.log("java is connected");
 
 
 
@@ -26,3 +17,38 @@ console.log("java is connected");
 // create a conditional about the uv index to change the colors depending
 
 // figure out the emoji situation. if i can use that in the api or if i have to make a conditional about it
+
+
+
+
+
+
+
+
+
+
+
+function init() {
+    console.log("java is connected");
+    todaysDate.text(m)
+    renderHistory()
+};
+
+
+function renderHistory() {
+    console.log("history rendered");
+}
+
+function saveSearch(e) {
+    e.preventDefault();
+    let searchContent = $(".form-control").val().trim()
+    console.log(searchContent);
+    
+}
+
+
+init()
+
+
+
+searchBtn.on("submit", saveSearch)
