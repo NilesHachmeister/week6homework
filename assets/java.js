@@ -1,6 +1,8 @@
 let todaysDate = $("#todays-date")
 let ul = $("ul")
 let searchBtn = $(".form-inline")
+const searchHistory = $("#search-history")
+
 const weatherForcast = $("#weather-forcast")
 const cardRow = $("#card-row")
 
@@ -26,8 +28,7 @@ let lon = ""
 
 // uv coloring
 // past button click functionality
-// card population
-// hidden weather thing at first
+
 
 
 
@@ -65,14 +66,22 @@ function callApi() {
 function setCurrentDay(data2) {
 
 
+    // let uvNumber = $("#uv-number")
+    uvNumber = data2.current.uvi;
+    // if (data2.current.uvi < 2) {
+    //     uvNumber.css("background-color", "green")
+    // }
+
+    console.log(data2.current.uvi);
+
     $("#temp").text("Temp: " + data2.current.temp + " °F")
     $("#wind").text("Wind: " + data2.current.wind_speed + " MPH")
     $("#humidity").text("Humidity: " + data2.current.humidity + " %")
-    $("#uv").text("UV Index: " + data2.current.uvi)
+    $("#uv").text("UV Index: " + uvNumber)
     let icon = data2.current.weather[0].icon
 
 
-    todaysDate.html(searchContent + " " + m + "<img src='http://openweathermap.org/img/w/" + icon + ".png' alt='An icon showing the weather conditions'>");
+    todaysDate.html(cityName + " " + m + "<img src='http://openweathermap.org/img/w/" + icon + ".png' alt='An icon showing the weather conditions'>");
 
 
 
@@ -98,12 +107,6 @@ function renderCard(data2) {
         card.append(h5)
 
 
-
-
-        // let p1 = $("<p>")
-        // p1.text("emoji")
-        // card.append(p1)
-
         let p1 = $("<p>")
         p1.text("Temp: " + data2.daily[index].temp.day + " °F")
         card.append(p1)
@@ -115,12 +118,7 @@ function renderCard(data2) {
         let p3 = $("<p>")
         p3.text("Humidity: " + data2.daily[index].humidity + " %")
         card.append(p3)
-
-
     }
-
-
-
 }
 
 
@@ -202,4 +200,13 @@ init()
 
 
 
+function findSearch(e) {
+
+
+    cityName = $(e.target).text()
+    callApi();
+
+}
+
 searchBtn.on("submit", saveSearch)
+searchHistory.on("click", findSearch)
