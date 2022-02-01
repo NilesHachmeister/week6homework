@@ -4,7 +4,13 @@ let searchBtn = $(".form-inline")
 
 let m = moment().format("(MM/DD/YYYY)");
 
+const weatherKey = "00c14fcd6e9b9c227fcc096ac537dbd1"
+let cityName = ""
 
+
+
+let lat = "";
+let lon = ""
 
 // search city grabs the city
 // creates a list item under the history. clicking on this list itempulls up the search again
@@ -21,6 +27,38 @@ let m = moment().format("(MM/DD/YYYY)");
 
 
 
+
+
+
+function callApi() {
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherKey}`)
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (data) {
+            console.log(data);
+            lat = data.coord.lat
+            lon = data.coord.lon
+            return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherKey}`)
+        })
+        .then(function (response2) {
+            return response2.json();
+        })
+        .then(function (data2) {
+            console.log(data2);
+            $("#temp").text("Temp: " + data2.current.temp + " °F")
+            $("#wind").text("Wind: " + data2.current.wind_speed + " MPH")
+            $("#humidity").text("Humidity: " + data2.current.humidity + " %")
+            $("#uv").text("UV Index: " + data2.current.uvi)
+            let icon = data2.current.weather[0].icon
+
+
+            todaysDate.html(m + "<img src='http://openweathermap.org/img/w/" + icon + ".png' alt='An icon showing the weather conditions'>");
+
+        });
+
+}
 
 
 
@@ -52,7 +90,8 @@ function renderHistory() {
             listItem.addClass("btn btn-secondary w-100 my-2 mx-0")
             ul.append(listItem)
 
-            console.log(element);
+
+
 
         }
     }
@@ -63,8 +102,8 @@ function saveSearch(e) {
     let searchContent = $(".form-control").val().trim()
     console.log(searchContent);
     reasignStorage()
-
-
+    cityName = searchContent
+    console.log(cityName);
 
     $("li").remove()
 
@@ -72,7 +111,7 @@ function saveSearch(e) {
 
     // if it doesnt match, add it, if it does match, dont add it, just go there
     renderHistory()
-
+    callApi()
 
 
 

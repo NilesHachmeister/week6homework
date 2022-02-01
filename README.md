@@ -97,3 +97,14 @@ sources:
 https://cssgradient.io/
 
 https://www.schemecolor.com/sample?getcolor=536878
+
+https://stackoverflow.com/questions/65373299/how-can-i-use-city-name-instead-of-lat-and-log-in-openweather-api
+
+
+https://openweathermap.org/current
+
+https://openweathermap.org/api/one-call-api
+
+
+https://www.reddit.com/r/FreeCodeCamp/comments/4con5s/how_do_i_use_the_icon_given_in_the_open_weather/
+
