@@ -1,32 +1,71 @@
-let todaysDate = $("#todays-date")
-let ul = $("ul")
-let searchBtn = $(".form-inline")
-const searchHistory = $("#search-history")
+// getting element from the html
+let todaysDate = $("#todays-date");
+const ul = $("ul");
+const searchBtn = $(".form-inline");
+const searchHistory = $("#search-history");
+const weatherForcast = $("#weather-forcast");
+const cardRow = $("#card-row");
 
-const weatherForcast = $("#weather-forcast")
-const cardRow = $("#card-row")
+// declaring my key for the weather api
+const weatherKey = "00c14fcd6e9b9c227fcc096ac537dbd1";
 
+//setting todays date 
 let m = moment().format("(MM/DD/YYYY)");
 
-const weatherKey = "00c14fcd6e9b9c227fcc096ac537dbd1"
-let cityName = ""
-
-
-
+// declaring my global variables
+let cityName = "";
 let lat = "";
-let lon = ""
+let lon = "";
 let previousCityCheck;
 
 
 
 
+// this fuction runs on page load
+function init() {
+
+    // this sets the current day
+    todaysDate.text(m);
+
+    // this hides elements of the html until they are given values
+    weatherForcast.hide();
+    $(".forcast").hide();
+    $("#error-div").hide()
+    $("#weather-card").hide()
+    
+    // this shows the search history
+    renderHistory();
+};
+
+// this function creates and shows the search history
+function renderHistory() {
+
+    // this cycles through all of the locations stored in local storage
+    for (let index = 0; index < 8; index++) {
+
+        const element = JSON.parse(localStorage.getItem([index]));
+
+        // this checks to make sure that there is something stored in local storage at the key location
+        if (element != null) {
+
+//  if something is in local storage a button is created for it
+            let listItem = $("<li>")
+            listItem.text(element)
+            listItem.addClass("btn btn-secondary w-100 my-2 mx-0")
+            ul.append(listItem)
+        }
+    }
+}
 
 
+// this function calls the api
 function callApi() {
 
+    // this fetches the information from the api based on the city the user searches for
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherKey}`)
         .then(function (response) {
 
+            // this throws up an error if the city searched does not exsist. it also hides and shows things accordingly
             if (response.status === 404) {
                 $("#weather-card").hide()
                 $("#error-div").show()
@@ -34,53 +73,61 @@ function callApi() {
                 $(".forcast").hide()
 
                 return;
+
+                // this  hides and swos things if the weather app does get information for the city back
             } else if (response.status == 200) {
-
-
                 $("#error-div").hide()
-
                 $("#weather-card").show()
                 weatherForcast.show()
-
                 $(".forcast").show()
 
+                // this takes the data and puts it in json format
                 return response.json();
             }
 
         })
         .then(function (data) {
-            console.log(data);
+
+            // this takes that data and gets the lat and long from it. it then searches one call for that city
             lat = data.coord.lat
             lon = data.coord.lon
             return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherKey}`)
         })
         .then(function (response2) {
+
+            // this takes the response and turns it into json format
             return response2.json();
         })
         .then(function (data2) {
 
-            console.log(data2);
-
+            // this takes that data and sets the current day weather info with it as well as the forcast cards
             setCurrentDay(data2);
-
             renderCard(data2);
 
+            // this checks if the city was part of the search history
             if (previousCityCheck == 0) {
 
+                // if the city was not already searched all of the storage is reasigned, removed from the page, the new city is stored, and the search history is reloaded
                 reasignStorage()
                 $("li").remove()
                 localStorage.setItem("0", JSON.stringify(cityName));
                 renderHistory()
-
             }
-
         });
-
 }
 
+// this function sets the weather of the current day
 function setCurrentDay(data2) {
 
+    // this sets each line based on the current weather
+    let icon = data2.current.weather[0].icon
+    $("#temp").text("Temp: " + data2.current.temp + " °F")
+    $("#wind").text("Wind: " + data2.current.wind_speed + " MPH")
+    $("#humidity").text("Humidity: " + data2.current.humidity + " %")
+    $("#uv").text("UV Index: ")
+    todaysDate.html(cityName + " " + m + "<img src='http://openweathermap.org/img/w/" + icon + ".png' alt='An icon showing the weather conditions'>");
 
+    // this checks the value of the uv index and changes the background color of it depending on the value
     let uvNumber = $("#uv-number")
     uvNumber.text(data2.current.uvi)
     if (data2.current.uvi < 3) {
@@ -95,33 +142,17 @@ function setCurrentDay(data2) {
     } else {
         uvNumber.css("background-color", "violet")
     }
-
-    console.log(data2.current.uvi);
-
-    $("#temp").text("Temp: " + data2.current.temp + " °F")
-    $("#wind").text("Wind: " + data2.current.wind_speed + " MPH")
-    $("#humidity").text("Humidity: " + data2.current.humidity + " %")
-
-
-    $("#uv").text("UV Index: ")
-    let icon = data2.current.weather[0].icon
-
-
-    todaysDate.html(cityName + " " + m + "<img src='http://openweathermap.org/img/w/" + icon + ".png' alt='An icon showing the weather conditions'>");
-
-
-
 }
 
 
-
+// this 
 function renderCard(data2) {
 
+    // this removes all previous cards
     $(".custom-card").remove()
 
+// this creates all cards based on the time sense epoch and the values given by the api
     for (let index = 1; index < 6; index++) {
-
-
 
 
         let card = $("<div>")
@@ -151,41 +182,12 @@ function renderCard(data2) {
 
 
 
-
-function init() {
-    weatherForcast.hide();
-    $(".forcast").hide();
-    $("#error-div").hide()
-    $("#weather-card").hide()
-    todaysDate.text(m);
-    renderHistory();
-
-};
-
-
-function renderHistory() {
-
-    for (let index = 0; index < 8; index++) {
-
-        const element = JSON.parse(localStorage.getItem([index]));
-
-        if (element != null) {
-
-            let listItem = $("<li>")
-            listItem.text(element)
-            listItem.addClass("btn btn-secondary w-100 my-2 mx-0")
-            ul.append(listItem)
-
-        }
-    }
-}
-
 function searchSubmit(e) {
 
-    // 
+    // this prevents the default of a page reloading on the form submition
     e.preventDefault();
 
-
+// this sets cityName to whatever the input value was
     cityName = $(".form-control").val().trim()
 
     // this resets the previous city check value to 0 
