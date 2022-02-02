@@ -32,7 +32,7 @@ function init() {
     $(".forcast").hide();
     $("#error-div").hide()
     $("#weather-card").hide()
-    
+
     // this shows the search history
     renderHistory();
 };
@@ -48,7 +48,7 @@ function renderHistory() {
         // this checks to make sure that there is something stored in local storage at the key location
         if (element != null) {
 
-//  if something is in local storage a button is created for it
+            //  if something is in local storage a button is created for it
             let listItem = $("<li>")
             listItem.text(element)
             listItem.addClass("btn btn-secondary w-100 my-2 mx-0")
@@ -151,7 +151,7 @@ function renderCard(data2) {
     // this removes all previous cards
     $(".custom-card").remove()
 
-// this creates all cards based on the time sense epoch and the values given by the api
+    // this creates all cards based on the time sense epoch and the values given by the api
     for (let index = 1; index < 6; index++) {
 
 
@@ -187,7 +187,7 @@ function searchSubmit(e) {
     // this prevents the default of a page reloading on the form submition
     e.preventDefault();
 
-// this sets cityName to whatever the input value was
+    // this sets cityName to whatever the input value was
     cityName = $(".form-control").val().trim()
 
     // this resets the previous city check value to 0 

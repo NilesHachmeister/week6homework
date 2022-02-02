@@ -1,15 +1,18 @@
+
+/* this sets the style for the header */
 header{
     background: rgb(0,151,255);
 background: linear-gradient(90deg, rgba(0,151,255,1) 0%, rgba(2,7,138,0.8183867296918768) 100%);
     color: white;
 }
 
+/* this sets the style for h1s */
 h1{
     height: 65px;
 }
 
 
-
+/* this sets the style for the cards created for the future weather */
 .custom-card{
     font-size: .9rem;
     background-color: 	#536878;
@@ -17,13 +20,13 @@ h1{
     padding-left: 1px;
 }
 
+/* this creates the style for the uv index number */
 #uv-number{
    border-radius: 5px;
    color: white;
 }
 
-
-
+/* this changes the border for the current days weather card */
 .mr-4{
     border: solid black 1px;
     border-radius: 0%;

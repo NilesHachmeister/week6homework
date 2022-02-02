@@ -13,14 +13,16 @@
 
 <body>
 
+    <!-- header -->
     <header class="text-center ">
         <h1> Weather Dashboard</h1>
     </header>
 
-
+    <!-- this sets my container for the main content on the page -->
     <div class="container vw-100 m-0 ">
-
         <div class="row m-0 vw-100">
+
+            <!-- this col is for searching and the search history -->
             <div class="col-3">
                 <h2>Search for a city:</h2>
                 <form class="form-inline mr-auto border-bottom">
@@ -30,8 +32,13 @@
                 <ul class="col-12 p-0" id="search-history"></ul>
             </div>
 
+            <!-- this col is for the weather conditions -->
             <div class="col-9">
+
+                <!-- this div is only displayed if there is a 404 errer -->
                 <div id="error-div">404 - please enter in a citys name, or click on a recently seached city</div>
+
+                <!--  this card shows the weather in the searched city-->
                 <div class="card mr-4" id="weather-card">
                     <div class="card-body" id="weather-forcast">
                         <h5 class="card-title" id="todays-date"></h5>
@@ -42,6 +49,7 @@
                         <p class="card-subtitle my-3" id="humidity">
                             </hp>
 
+                            <!-- this alows me to change the background color of the uv index number  -->
                             <span class="card-subtitle my-3">
                                 <p id="uv" class="d-inline"></p>
                                 <p id="uv-number" class="d-inline px-2 py-1"></p>
@@ -52,24 +60,13 @@
 
                     </div>
                 </div>
+
+                <!-- this is an area for the cards to be created based on the weather forcast for the chosen city -->
                 <h3 class="forcast">5-Day Forcast:</h3>
                 <div class="row forcast" id="card-row">
-
-
-
-
-
-
-
                 </div>
-
             </div>
-
-
-
         </div>
-
-
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
