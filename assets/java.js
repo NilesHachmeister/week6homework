@@ -11,19 +11,11 @@ let m = moment().format("(MM/DD/YYYY)");
 const weatherKey = "00c14fcd6e9b9c227fcc096ac537dbd1"
 let cityName = ""
 
-let searchContent = "";
 
 
 let lat = "";
 let lon = ""
-let count;
-
-
-
-
-
-
-// fix click between city issue
+let previousCityCheck;
 
 
 
@@ -36,7 +28,7 @@ function callApi() {
         .then(function (response) {
 
             if (response.status === 404) {
-
+                $("#weather-card").hide()
                 $("#error-div").show()
                 weatherForcast.hide()
                 $(".forcast").hide()
@@ -47,6 +39,7 @@ function callApi() {
 
                 $("#error-div").hide()
 
+                $("#weather-card").show()
                 weatherForcast.show()
 
                 $(".forcast").show()
@@ -72,7 +65,7 @@ function callApi() {
 
             renderCard(data2);
 
-            if (count == 0) {
+            if (previousCityCheck == 0) {
 
                 reasignStorage()
                 $("li").remove()
@@ -163,6 +156,7 @@ function init() {
     weatherForcast.hide();
     $(".forcast").hide();
     $("#error-div").hide()
+    $("#weather-card").hide()
     todaysDate.text(m);
     renderHistory();
 
@@ -186,38 +180,47 @@ function renderHistory() {
     }
 }
 
-function saveSearch(e) {
+function searchSubmit(e) {
+
+    // 
     e.preventDefault();
-    searchContent = $(".form-control").val().trim()
-    cityName = searchContent
 
-    count = 0;
 
+    cityName = $(".form-control").val().trim()
+
+    // this resets the previous city check value to 0 
+    previousCityCheck = 0;
+
+    // this goes through the storage and checks if there if each storage item matches the current search
     for (let index = 0; index < 8; index++) {
-
         let element = JSON.parse(localStorage.getItem([index]));
 
+        // this checks to make sure that there is a city in the current storage spot
         if (element !== null) {
-            if (element.toLowerCase() == cityName.toLowerCase()) {
-                count++
-                callApi();
 
+            // this compares the current city to the one in storag
+            if (element.toLowerCase() == cityName.toLowerCase()) {
+
+                // this indicates that the city has already been set to storage and calls the api
+                previousCityCheck++
+                callApi();
             }
         }
     }
 
-    if (count == 0) {
+    // this calls the api if the city typed in is not a city that is already in storage
+    if (previousCityCheck === 0) {
         callApi()
     }
+
+    // this takes clears the value of the search bar
     $(".form-control").val("")
 }
 
-
-
-
-
+// this function reasigns everything in storage one spot later
 function reasignStorage() {
 
+    // this asignes everythirng in storage (other than the last item) to a variable
     let store0 = JSON.parse(localStorage.getItem("0"));
     let store1 = JSON.parse(localStorage.getItem("1"));
     let store2 = JSON.parse(localStorage.getItem("2"));
@@ -226,7 +229,7 @@ function reasignStorage() {
     let store5 = JSON.parse(localStorage.getItem("5"));
     let store6 = JSON.parse(localStorage.getItem("6"));
 
-
+    // this takes the variables and asignes them to places in local storage (other than the first local storage slot)
     localStorage.setItem("7", JSON.stringify(store6));
     localStorage.setItem("6", JSON.stringify(store5));
     localStorage.setItem("5", JSON.stringify(store4));
@@ -237,24 +240,28 @@ function reasignStorage() {
 }
 
 
-
-
-
-init()
-
-
-
+// this function checks which city was clicked, and researches it.
 function findSearch(e) {
 
+    // this checks to make sure that it is a list item that is clicked, 
     if (e.target.tagName.toLowerCase() === "li") {
 
+        //  this sets the city name to the one that is clicked
         cityName = $(e.target).text()
+
+        // this calls the api
         callApi();
-        count++
 
+        // this marks that the city has already been seen, that way we do not create another list item for it
+        previousCityCheck++
     }
-
 }
 
-searchBtn.on("submit", saveSearch)
+// this start the program on page load
+init()
+
+// this event listener listens for the search being submitted. when it is submited it runs the save search
+searchBtn.on("submit", searchSubmit)
+
+// this event listener 
 searchHistory.on("click", findSearch)
