@@ -109,3 +109,5 @@ https://openweathermap.org/api/one-call-api
 https://www.reddit.com/r/FreeCodeCamp/comments/4con5s/how_do_i_use_the_icon_given_in_the_open_weather/
 
 https://stackoverflow.com/questions/40752287/use-moment-js-to-convert-unix-epoch-time-to-human-readable-time
+
+https://stackoverflow.com/questions/15661343/check-if-event-target-is-hyperlink

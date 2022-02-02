@@ -245,9 +245,15 @@ init()
 
 
 function findSearch(e) {
-    cityName = $(e.target).text()
-    callApi();
-    count++
+
+    if (e.target.tagName.toLowerCase() === "li") {
+
+        cityName = $(e.target).text()
+        callApi();
+        count++
+
+    }
+
 }
 
 searchBtn.on("submit", saveSearch)
