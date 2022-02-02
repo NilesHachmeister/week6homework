@@ -17,3 +17,7 @@ h1{
     padding-left: 1px;
 }
 
+#uv-number{
+   border-radius: 5px;
+   color: white;
+}

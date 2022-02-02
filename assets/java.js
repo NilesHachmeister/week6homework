@@ -22,11 +22,11 @@ let count;
 
 
 
-// uv coloring
+
+// fix click between city issue
 
 
 
-// alert if city name is typed in wrong ---- remove forcast
 
 
 
@@ -34,24 +34,24 @@ function callApi() {
 
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherKey}`)
         .then(function (response) {
+
             if (response.status === 404) {
+
                 $("#error-div").show()
-                setCurrentDay(data2);
-
-                weatherForcast.remove()
-                $("#forcast").remove()
-
+                weatherForcast.hide()
+                $(".forcast").hide()
 
                 return;
-            }
-            if (response.status == 200) {
+            } else if (response.status == 200) {
+
+
                 $("#error-div").hide()
+
                 weatherForcast.show()
-                $("#forcast").hide()
+
+                $(".forcast").show()
 
                 return response.json();
-
-
             }
 
         })
@@ -65,10 +65,11 @@ function callApi() {
             return response2.json();
         })
         .then(function (data2) {
+
             console.log(data2);
-            weatherForcast.show();
+
             setCurrentDay(data2);
-            $("#forcast").show()
+
             renderCard(data2);
 
             if (count == 0) {
@@ -87,18 +88,29 @@ function callApi() {
 function setCurrentDay(data2) {
 
 
-    // let uvNumber = $("#uv-number")
-    uvNumber = data2.current.uvi;
-    // if (data2.current.uvi < 2) {
-    //     uvNumber.css("background-color", "green")
-    // }
+    let uvNumber = $("#uv-number")
+    uvNumber.text(data2.current.uvi)
+    if (data2.current.uvi < 3) {
+        uvNumber.css("background-color", "green")
+    } else if (6 > data2.current.uvi && data2.current.uvi >= 3) {
+        uvNumber.css("background-color", "yellow")
+        uvNumber.css("color", "black")
+    } else if (8 > data2.current.uvi && data2.current.uvi >= 6) {
+        uvNumber.css("background-color", "orange")
+    } else if (11 > data2.current.uvi && data2.current.uvi >= 8) {
+        uvNumber.css("background-color", "red")
+    } else {
+        uvNumber.css("background-color", "violet")
+    }
 
     console.log(data2.current.uvi);
 
     $("#temp").text("Temp: " + data2.current.temp + " °F")
     $("#wind").text("Wind: " + data2.current.wind_speed + " MPH")
     $("#humidity").text("Humidity: " + data2.current.humidity + " %")
-    $("#uv").text("UV Index: " + uvNumber)
+
+
+    $("#uv").text("UV Index: ")
     let icon = data2.current.weather[0].icon
 
 
@@ -149,7 +161,7 @@ function renderCard(data2) {
 
 function init() {
     weatherForcast.hide();
-    $("#forcast").hide();
+    $(".forcast").hide();
     $("#error-div").hide()
     todaysDate.text(m);
     renderHistory();
