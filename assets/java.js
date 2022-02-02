@@ -16,25 +16,17 @@ let searchContent = "";
 
 let lat = "";
 let lon = ""
+let count;
 
 
-// clicking on this list itempulls up the search again
 
-
-// it takes the information and displays the current and the next days cards
-
-// I may have to brute force the cards instead of looping though
 
 
 // uv coloring
-// past button click functionality
 
 
 
-
-
-
-// add if match function
+// alert if city name is typed in wrong ---- remove forcast
 
 
 
@@ -42,7 +34,26 @@ function callApi() {
 
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${weatherKey}`)
         .then(function (response) {
-            return response.json();
+            if (response.status === 404) {
+                $("#error-div").show()
+                setCurrentDay(data2);
+
+                weatherForcast.remove()
+                $("#forcast").remove()
+
+
+                return;
+            }
+            if (response.status == 200) {
+                $("#error-div").hide()
+                weatherForcast.show()
+                $("#forcast").hide()
+
+                return response.json();
+
+
+            }
+
         })
         .then(function (data) {
             console.log(data);
@@ -57,8 +68,18 @@ function callApi() {
             console.log(data2);
             weatherForcast.show();
             setCurrentDay(data2);
-
+            $("#forcast").show()
             renderCard(data2);
+
+            if (count == 0) {
+
+                reasignStorage()
+                $("li").remove()
+                localStorage.setItem("0", JSON.stringify(cityName));
+                renderHistory()
+
+            }
+
         });
 
 }
@@ -128,6 +149,8 @@ function renderCard(data2) {
 
 function init() {
     weatherForcast.hide();
+    $("#forcast").hide();
+    $("#error-div").hide()
     todaysDate.text(m);
     renderHistory();
 
@@ -154,21 +177,30 @@ function renderHistory() {
 function saveSearch(e) {
     e.preventDefault();
     searchContent = $(".form-control").val().trim()
-    console.log(searchContent);
-    reasignStorage()
     cityName = searchContent
-    console.log(cityName);
 
-    $("li").remove()
+    count = 0;
 
-    localStorage.setItem("0", JSON.stringify(searchContent));
+    for (let index = 0; index < 8; index++) {
 
-    // if it doesnt match, add it, if it does match, dont add it, just go there
-    renderHistory()
-    callApi()
+        let element = JSON.parse(localStorage.getItem([index]));
 
+        if (element !== null) {
+            if (element.toLowerCase() == cityName.toLowerCase()) {
+                count++
+                callApi();
 
+            }
+        }
+    }
+
+    if (count == 0) {
+        callApi()
+    }
+    $(".form-control").val("")
 }
+
+
 
 
 
@@ -201,11 +233,9 @@ init()
 
 
 function findSearch(e) {
-
-
     cityName = $(e.target).text()
     callApi();
-
+    count++
 }
 
 searchBtn.on("submit", saveSearch)
